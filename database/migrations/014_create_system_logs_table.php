@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('system_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('action');
+            $table->text('description');
+            $table->string('ip_address')->nullable();
+            $table->text('user_agent')->nullable();
+            $table->json('extra_data')->nullable();
+            $table->timestamps();
+            
+            $table->index(['user_id', 'action']);
+            $table->index('created_at');
+            $table->index('ip_address');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('system_logs');
+    }
+};
